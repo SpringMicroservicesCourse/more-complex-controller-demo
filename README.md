@@ -1,407 +1,959 @@
-# Spring Boot 複雜控制器實戰專案 ⚡
+# more-complex-controller-demo
 
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+> Advanced Spring MVC controller methods with custom Formatter, Bean Validation, and Multipart file upload
+
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/)
+[![Spring MVC](https://img.shields.io/badge/Spring%20MVC-6.2.5-blue.svg)](https://spring.io/projects/spring-framework)
+[![Jakarta Validation](https://img.shields.io/badge/Jakarta%20Validation-3.1.0-red.svg)](https://jakarta.ee/specifications/bean-validation/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 專案介紹
+A comprehensive demonstration of **advanced Spring MVC controller methods** featuring custom `Formatter` implementation, automatic Bean Validation, and Multipart file upload handling.
 
-這是一個基於 Spring Boot 3.x 的咖啡店訂單管理系統實戰專案，展示了複雜控制器設計、資料驗證、異常處理和 RESTful API 開發的最佳實踐。
+## Features
 
-### 核心功能
-- **咖啡商品管理**: 支援新增、查詢咖啡商品資訊
-- **訂單處理系統**: 完整的訂單建立和狀態管理流程
-- **資料驗證機制**: 使用 Jakarta Validation 進行請求參數驗證
-- **異常處理**: 統一的錯誤處理和回應格式
-- **快取機制**: 整合 Spring Cache 提升查詢效能
-- **自定義類型轉換**: 實作 MoneyFormatter 處理貨幣類型轉換
-- **檔案上傳處理**: 支援 Multipart 檔案上傳和批次處理
+- Custom `MoneyFormatter` for Joda Money type conversion
+- Automatic Bean Validation with `@Valid`
+- Two validation strategies: manual (BindingResult) vs automatic (Spring MVC)
+- Multipart file upload for batch coffee creation
+- Form data validation (application/x-www-form-urlencoded)
+- Multiple currency format support ("125.00" and "TWD 125.00")
+- Spring Boot WebMVC Auto Configuration demonstration
+- Formatter auto-registration with `@Component`
+- Complete CRUD operations for coffee and orders
+- Spring Cache integration
+- H2 database integration
 
-### 解決的問題
-- 複雜業務邏輯的控制器設計模式
-- 資料驗證錯誤的統一處理
-- 多種請求格式的支援（JSON、Form Data、Multipart）
-- 貨幣類型的資料庫儲存和轉換
-- Spring Boot 自動配置機制下的類型轉換
-- 自定義 Formatter 和 Converter 的實作
-- 檔案上傳和批次資料處理
+## Tech Stack
 
-### 目標使用者
-- Spring Boot 開發者
-- 需要學習複雜控制器設計的工程師
-- 想要了解 Spring Boot 3.x 新特性的開發者
+- Spring Boot 3.4.5
+- Spring MVC 6.2.5
+- Spring Data JPA
+- Jakarta Validation (Bean Validation 3.0)
+- Java 21
+- H2 Database 2.3.232
+- Joda Money 2.0.2
+- Apache Commons Lang3
+- Lombok
+- Maven 3.8+
 
-> 💡 **為什麼選擇此專案？**
-> - 展示 Spring Boot 3.x 的最新特性和最佳實踐
-> - 提供完整的驗證錯誤處理解決方案
-> - 包含實際業務場景的程式碼範例
-> - 使用台灣本地化的技術術語和註解
+## Getting Started
 
-### 🎯 專案特色
+### Prerequisites
 
-- **現代化技術棧**: 使用 Java 21 和 Spring Boot 3.4.5
-- **完整的驗證機制**: 整合 Jakarta Validation 和自定義異常處理
-- **多格式支援**: 支援 JSON、Form Data、Multipart 等多種請求格式
-- **貨幣處理**: 使用 Joda Money 處理貨幣計算和資料庫轉換
-- **快取優化**: 整合 Spring Cache 提升查詢效能
-- **自定義類型轉換**: 實作 MoneyFormatter 處理貨幣字串轉換
-- **Spring Boot 自動配置**: 展示 WebMVC Auto Configuration 機制
-- **檔案上傳處理**: 支援批次檔案上傳和資料處理
+- JDK 21 or higher
+- Maven 3.8+ (or use included Maven Wrapper)
 
-## 技術棧
+### Quick Start
 
-### 核心框架
-- **Spring Boot 3.4.5** - 現代化的 Java 應用程式框架
-- **Spring MVC** - Web 層控制器和請求處理
-- **Spring Data JPA** - 資料存取層和 ORM 框架
-- **Spring Cache** - 快取機制和效能優化
+**Run the application:**
 
-### 開發工具與輔助
-- **Java 21** - 最新的 Java 版本，支援現代化語法
-- **Maven** - 專案建置和依賴管理
-- **H2 Database** - 內嵌式資料庫，方便開發測試
-- **Lombok** - 減少樣板程式碼，提升開發效率
-- **Joda Money** - 專業的貨幣處理函式庫
-- **Apache Commons Lang3** - 字串處理和數字轉換工具
-- **Spring Boot Auto Configuration** - 自動配置機制
-
-## 專案結構
-
-```
-more-complex-controller-demo/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── tw/fengqing/spring/springbucks/waiter/
-│   │   │       ├── controller/
-│   │   │       │   ├── CoffeeController.java          # 咖啡商品控制器
-│   │   │       │   ├── CoffeeOrderController.java     # 訂單控制器
-│   │   │       │   ├── GlobalExceptionHandler.java    # 全域異常處理器
-│   │   │       │   └── request/
-│   │   │       │       ├── NewCoffeeRequest.java      # 新增咖啡請求物件
-│   │   │       │       └── NewOrderRequest.java       # 新增訂單請求物件
-│   │   │       ├── model/
-│   │   │       │   ├── BaseEntity.java                # 基礎實體類別
-│   │   │       │   ├── Coffee.java                    # 咖啡實體
-│   │   │       │   ├── CoffeeOrder.java               # 訂單實體
-│   │   │       │   ├── MoneyConverter.java            # 貨幣轉換器
-│   │   │       │   └── OrderState.java                # 訂單狀態列舉
-│   │   │       ├── repository/
-│   │   │       │   ├── CoffeeRepository.java          # 咖啡資料存取層
-│   │   │       │   └── CoffeeOrderRepository.java     # 訂單資料存取層
-│   │   │       ├── service/
-│   │   │       │   ├── CoffeeService.java             # 咖啡業務邏輯
-│   │   │       │   └── CoffeeOrderService.java        # 訂單業務邏輯
-│   │   │       └── support/
-│   │   │           └── MoneyFormatter.java            # 貨幣格式化器
-│   │   └── resources/
-│   │       ├── application.properties                  # 應用程式設定檔
-│   │       ├── schema.sql                             # 資料庫結構定義
-│   │       ├── data.sql                               # 初始資料
-│   │       └── coffee.txt                             # 咖啡資料檔案
-│   └── test/
-│       └── java/
-│           └── tw/fengqing/spring/springbucks/waiter/
-│               └── WaiterServiceApplicationTests.java  # 應用程式測試
-├── pom.xml                                             # Maven 專案設定
-└── README.md                                           # 專案說明文件
-```
-
-## 快速開始
-
-### 前置需求
-- **Java 21** - 請確保已安裝 Java 21 或更新版本
-- **Maven 3.6+** - 用於專案建置和依賴管理
-- **IDE 支援** - 建議使用 IntelliJ IDEA 或 Eclipse
-
-### 安裝與執行
-
-1. **克隆此倉庫：**
 ```bash
-git clone https://github.com/SpringMicroservicesCourse/spring-microservices-course.git
+./mvnw spring-boot:run
 ```
 
-2. **進入專案目錄：**
+**Test MoneyFormatter:**
+
 ```bash
-cd more-complex-controller-demo
-```
-
-3. **編譯專案：**
-```bash
-mvn clean compile
-```
-
-4. **執行應用程式：**
-```bash
-mvn spring-boot:run
-```
-
-5. **驗證應用程式：**
-應用程式啟動後，可以透過以下方式驗證：
-- 瀏覽器訪問：`http://localhost:8080`
-- 查看所有咖啡：`GET http://localhost:8080/coffee/`
-
-## API 使用範例
-
-### 咖啡商品管理
-
-#### 1. 新增咖啡商品（Form Data）
-```bash
-# 使用 Form Data 格式，支援自定義貨幣格式
+# Format 1: Pure number (default TWD)
 curl -X POST http://localhost:8080/coffee/ \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "name=美式咖啡&price=100.00"
+  -d "name=Americano&price=125.00"
 
-# 支援帶貨幣代碼的格式
+# Format 2: With currency code
 curl -X POST http://localhost:8080/coffee/ \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "name=拿鐵咖啡&price=TWD 150.00"
+  -d "name=latte&price=TWD 125.00"
 ```
 
-#### 2. 批次新增咖啡商品（Multipart）
-```bash
-# 使用 Multipart 格式上傳檔案
-# coffee.txt 內容格式：每行一個咖啡，格式為 "名稱 價格"
-curl -X POST http://localhost:8080/coffee/ \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@coffee.txt"
-```
+## Configuration
 
-#### 3. 查詢咖啡商品
-```bash
-# 查詢所有咖啡
-curl http://localhost:8080/coffee/
+### Application Properties
 
-# 依名稱查詢
-curl "http://localhost:8080/coffee/?name=espresso"
-```
-
-### 訂單管理
-
-#### 1. 建立新訂單
-```bash
-curl -X POST http://localhost:8080/order/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customer": "張三",
-    "items": ["espresso", "latte"]
-  }'
-```
-
-## 進階說明
-
-### Spring Boot 自動配置機制
-
-本專案展示了 Spring Boot 的 WebMVC Auto Configuration 機制：
-
-1. **WebMVC Auto Configuration**: Spring Boot 自動配置 WebMVC 相關元件
-2. **類型轉換器註冊**: 自動註冊 Converter、GenericConverter 和 Formatter
-3. **Multipart 配置**: 自動配置 MultipartResolver 處理檔案上傳
-4. **驗證機制**: 整合 Hibernate Validator 進行資料驗證
-
-### 自定義類型轉換
-
-專案實作了 `MoneyFormatter` 來處理貨幣類型轉換：
-
-```java
-@Component
-public class MoneyFormatter implements Formatter<Money> {
-    // 支援 "TWD 100.00" 或 "100.00" 格式
-    // 自動註冊到 Spring 容器中
-}
-```
-
-### 環境變數
 ```properties
-# 資料庫設定
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-
-# JPA 設定
+# JPA/Hibernate configuration
 spring.jpa.hibernate.ddl-auto=none
-spring.jpa.show_sql=true
-spring.jpa.format_sql=true
+spring.jpa.properties.hibernate.show_sql=true
+spring.jpa.properties.hibernate.format_sql=true
 
-# 快取設定
-spring.cache.type=caffeine
-
-# Multipart 檔案上傳設定
-spring.servlet.multipart.max-file-size=10MB
-spring.servlet.multipart.max-request-size=10MB
+# Error response configuration (for development only)
+server.error.include-message=always
+server.error.include-binding-errors=always
 ```
 
-### 設定檔說明
-```properties
-# application.properties 主要設定
-spring.jpa.hibernate.ddl-auto=none          # 不自動建立資料表
-spring.jpa.properties.hibernate.show_sql=true    # 顯示 SQL 語句
-spring.jpa.properties.hibernate.format_sql=true  # 格式化 SQL 輸出
-```
+**Important:**
+- `show_sql=true`: Show SQL statements (development only)
+- `include-message=always`: Include error messages in response (development only)
+- **Production**: Set to `never` to avoid information leakage
 
-### 重要程式碼區塊說明
+## Custom MoneyFormatter
 
-#### 1. 自定義貨幣格式化器
+### Implementation
+
 ```java
 @Component
 public class MoneyFormatter implements Formatter<Money> {
+    
     /**
-     * 處理 TWD 10.00 / 10.00 形式的字串
-     * 支援帶貨幣代碼或不帶貨幣代碼的格式
+     * Parse string to Money object
+     * Supports: "125.00" or "TWD 125.00"
      */
     @Override
     public Money parse(String text, Locale locale) throws ParseException {
+        // Case 1: Pure number → default TWD
         if (NumberUtils.isParsable(text)) {
             return Money.of(CurrencyUnit.of("TWD"), NumberUtils.createBigDecimal(text));
-        } else if (StringUtils.isNotEmpty(text)) {
+        } 
+        // Case 2: With currency code "TWD 125.00"
+        else if (StringUtils.isNotEmpty(text)) {
             String[] split = StringUtils.split(text, " ");
             if (split != null && split.length == 2 && NumberUtils.isParsable(split[1])) {
                 return Money.of(CurrencyUnit.of(split[0]),
                         NumberUtils.createBigDecimal(split[1]));
+            } else {
+                throw new ParseException(text, 0);
             }
         }
         throw new ParseException(text, 0);
     }
+
+    /**
+     * Format Money object to string
+     * Output: "TWD 125.00"
+     */
+    @Override
+    public String print(Money money, Locale locale) {
+        return money.getCurrencyUnit().getCode() + " " + money.getAmount();
+    }
 }
 ```
 
-#### 2. 控制器驗證處理
+### How It Works
+
+```
+1. @Component annotation → Spring auto-registers Formatter
+2. Spring Boot WebMVC Auto Configuration detects it
+3. FormatterRegistry automatically registers MoneyFormatter
+4. Form data submission → MoneyFormatter.parse() converts string to Money
+5. Response serialization → MoneyFormatter.print() converts Money to string
+```
+
+### Supported Formats
+
+| Input Format | Description | Example | Result |
+|-------------|-------------|---------|--------|
+| **Pure number** | Default currency (TWD) | `"125.00"` | `Money.of(TWD, 125.00)` |
+| **With currency** | Explicit currency code | `"TWD 125.00"` | `Money.of(TWD, 125.00)` |
+| **Other currency** | Any ISO 4217 code | `"USD 10.00"` | `Money.of(USD, 10.00)` |
+
+## Validation Strategies
+
+### Two Validation Approaches
+
+This project demonstrates **two different validation strategies**:
+
+| Strategy | BindingResult | Error Handling | Response | This Project |
+|----------|--------------|----------------|----------|-------------|
+| **Method 1** | ✅ Has | Manual check, return `null` | 201 (even if validation fails) | ⚠️ Commented out |
+| **Method 2** | ❌ No | Spring MVC auto-handles | 400 BAD REQUEST | ✅ In use |
+
+### Method 1: Manual Validation (Commented Out)
+
 ```java
+/**
+ * Method 1: Manual validation handling
+ * Validation errors return null
+ */
+// @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+// @ResponseBody
+// @ResponseStatus(HttpStatus.CREATED)
+// public Coffee addCoffee(@Valid NewCoffeeRequest newCoffee, BindingResult result) {
+//     if (result.hasErrors()) {
+//         log.warn("Binding Errors: {}", result);
+//         return null;  // Custom error handling
+//     }
+//     return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
+// }
+```
+
+**Characteristics:**
+- ✅ Can customize error handling logic
+- ✅ Can log detailed validation errors
+- ❌ Returns `null` on validation failure (HTTP 201)
+- ❌ Not RESTful compliant (wrong status code)
+
+### Method 2: Automatic Validation (In Use) ✅
+
+```java
+/**
+ * Method 2: Spring MVC automatic validation
+ * Validation errors automatically return 400 Bad Request
+ */
 @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 @ResponseBody
 @ResponseStatus(HttpStatus.CREATED)
-public Coffee addCoffee(@Valid NewCoffeeRequest newCoffee, BindingResult result) {
-    if (result.hasErrors()) {
-        // 自定義驗證錯誤處理，不讓 Spring MVC 自動處理
-        log.warn("Binding Errors: {}", result);
-        return null;
-    }
+public Coffee addCoffeeWithoutBindingResult(@Valid NewCoffeeRequest newCoffee) {
+    // Spring MVC auto-handles validation errors
     return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
 }
 ```
 
-#### 3. 檔案上傳處理
-```java
-@PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-@ResponseBody
-@ResponseStatus(HttpStatus.CREATED)
-public List<Coffee> batchAddCoffee(@RequestParam("file") MultipartFile file) {
-    List<Coffee> coffees = new ArrayList<>();
-    if (!file.isEmpty()) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-            String str;
-            while ((str = reader.readLine()) != null) {
-                String[] arr = StringUtils.split(str, " ");
-                if (arr != null && arr.length == 2) {
-                    coffees.add(coffeeService.saveCoffee(arr[0],
-                            Money.of(CurrencyUnit.of("TWD"),
-                                    NumberUtils.createBigDecimal(arr[1]))));
-                }
-            }
-        } catch (IOException e) {
-            log.error("exception", e);
-        } finally {
-            IOUtils.closeQuietly(reader);
+**Characteristics:**
+- ✅ Simpler code, no manual validation check
+- ✅ Spring MVC auto-returns 400 on validation failure
+- ✅ RESTful compliant
+- ✅ Detailed JSON error response
+- ✅ Frontend can directly check HTTP status code
+
+## API Documentation
+
+### Coffee API
+
+#### 1. Add Coffee (Form Data - Success, Pure Number)
+
+```bash
+curl -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=Americano&price=125.00"
+```
+
+**MoneyFormatter Processing:**
+- Input: `"125.00"` (string)
+- Process: `MoneyFormatter.parse()` converts to `Money.of(TWD, 125.00)`
+- Save: Money object saved to database
+
+**Response:** 201 CREATED
+
+```json
+{
+    "id": 6,
+    "createTime": "2025-10-18T00:30:03.005+00:00",
+    "updateTime": "2025-10-18T00:30:03.005+00:00",
+    "name": "Americano",
+    "price": {
+        "currencyUnit": {
+            "code": "TWD",
+            "numericCode": 901,
+            "decimalPlaces": 2,
+            "symbol": "$"
+        },
+        "amount": 125.00
+    }
+}
+```
+
+#### 2. Add Coffee (Form Data - Success, With Currency Code)
+
+```bash
+curl -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=latte&price=TWD 150.00"
+```
+
+**MoneyFormatter Processing:**
+- Input: `"TWD 150.00"` (string)
+- Process: Parse currency code and amount separately
+- Result: `Money.of(TWD, 150.00)`
+
+**Response:** 201 CREATED
+
+#### 3. Add Coffee (Validation Error - Empty Name)
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=&price=125.00"
+```
+
+**Spring MVC Automatic Validation:**
+- Detects: `@NotEmpty` violation on `name` field
+- Action: Auto-return 400 Bad Request
+- Error: Detailed JSON error response
+
+**Response:** 400 BAD REQUEST
+
+```json
+{
+    "timestamp": "2025-10-18T01:06:10.966+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Validation failed for object='newCoffeeRequest'. Error count: 1",
+    "errors": [
+        {
+            "objectName": "newCoffeeRequest",
+            "field": "price",
+            "rejectedValue": null,
+            "codes": ["NotNull.newCoffeeRequest.price", "NotNull.price", "NotNull.org.joda.money.Money", "NotNull"],
+            "defaultMessage": "不得是空值",
+            "bindingFailure": false,
+            "code": "NotNull"
+        }
+    ],
+    "path": "/coffee/"
+}
+```
+
+**Error Details:**
+- HTTP Status: 400 Bad Request
+- Error Type: Validation failed
+- Field: `price` (violates `@NotNull`)
+- Rejected Value: `null`
+- Default Message: 不得是空值
+
+#### 4. Add Coffee (Type Conversion Error - Invalid Price)
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=Americano&price=XXX"
+```
+
+**MoneyFormatter Processing:**
+- Input: `"XXX"` (invalid format)
+- Parse: MoneyFormatter cannot convert
+- Error: Type conversion failed
+
+**Response:** 400 BAD REQUEST
+
+```json
+{
+    "timestamp": "2025-10-18T00:40:15.627+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Validation failed for object='newCoffeeRequest'. Error count: 1",
+    "errors": [
+        {
+            "codes": ["typeMismatch.newCoffeeRequest.price", "typeMismatch.price", "typeMismatch.org.joda.money.Money", "typeMismatch"],
+            "defaultMessage": "Failed to convert property value of type 'java.lang.String' to required type 'org.joda.money.Money' for property 'price'; Failed to convert from type [java.lang.String] to type [@jakarta.validation.constraints.NotNull org.joda.money.Money] for value [XXX]",
+            "objectName": "newCoffeeRequest",
+            "field": "price",
+            "rejectedValue": "XXX",
+            "bindingFailure": true,
+            "code": "typeMismatch"
+        }
+    ],
+    "path": "/coffee/"
+}
+```
+
+**Error Details:**
+- HTTP Status: 400 Bad Request
+- Error Type: Type mismatch
+- Cause: MoneyFormatter cannot parse "XXX"
+- Note: This is a type conversion error, not `@NotNull` validation error
+
+#### 5. Batch Add Coffees (File Upload)
+
+**Create test file (coffee.txt):**
+
+```
+Americano 125.0
+Italian 150.0
+```
+
+**Upload:**
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@coffee.txt"
+```
+
+**Response:** 201 CREATED
+
+```json
+[
+    {
+        "id": 7,
+        "createTime": "2025-10-18T00:41:01.915+00:00",
+        "updateTime": "2025-10-18T00:41:01.915+00:00",
+        "name": "Americano",
+        "price": {
+            "currencyUnit": {
+                "code": "TWD",
+                "numericCode": 901
+            },
+            "amount": 125.00
+        }
+    },
+    {
+        "id": 8,
+        "createTime": "2025-10-18T00:41:01.947+00:00",
+        "updateTime": "2025-10-18T00:41:01.947+00:00",
+        "name": "Italian",
+        "price": {
+            "currencyUnit": {
+                "code": "TWD",
+                "numericCode": 901
+            },
+            "amount": 150.00
         }
     }
-    return coffees;
-}
+]
 ```
 
-#### 4. 全域異常處理器
-```java
-@ControllerAdvice
-@Slf4j
-public class GlobalExceptionHandler {
-    /**
-     * 處理驗證錯誤異常
-     * 當 @Valid 註解驗證失敗時會被觸發
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        // 收集所有驗證錯誤並回傳詳細資訊
-    }
-}
+#### 6. Get All Coffees
+
+```bash
+curl -X GET http://localhost:8080/coffee/
 ```
 
-#### 5. 貨幣轉換器（JPA）
+**Response:** 200 OK (includes all created coffees)
+
+## Key Components
+
+### MoneyFormatter
+
 ```java
-@Converter(autoApply = true)
-public class MoneyConverter implements AttributeConverter<Money, Long> {
-    /**
-     * 將 Money 物件轉換為資料庫中的長整數值
-     * 將金額轉換為最小貨幣單位（分）
-     */
+@Component
+public class MoneyFormatter implements Formatter<Money> {
+    
     @Override
-    public Long convertToDatabaseColumn(Money attribute) {
-        return attribute == null ? null : attribute.getAmountMinorLong();
+    public Money parse(String text, Locale locale) throws ParseException {
+        // Case 1: Pure number → default TWD
+        if (NumberUtils.isParsable(text)) {
+            return Money.of(CurrencyUnit.of("TWD"), NumberUtils.createBigDecimal(text));
+        } 
+        // Case 2: With currency code "TWD 125.00"
+        else if (StringUtils.isNotEmpty(text)) {
+            String[] split = StringUtils.split(text, " ");
+            if (split != null && split.length == 2 && NumberUtils.isParsable(split[1])) {
+                return Money.of(CurrencyUnit.of(split[0]),
+                        NumberUtils.createBigDecimal(split[1]));
+            } else {
+                throw new ParseException(text, 0);
+            }
+        }
+        throw new ParseException(text, 0);
+    }
+
+    @Override
+    public String print(Money money, Locale locale) {
+        return money.getCurrencyUnit().getCode() + " " + money.getAmount();
     }
 }
 ```
 
-## 參考資源
+**How it works:**
+1. `@Component` → Spring auto-registers as a bean
+2. Spring Boot WebMVC Auto Configuration detects `Formatter<Money>`
+3. Automatically registered to `FormatterRegistry`
+4. Applied during form data binding
 
-- [Spring Boot 官方文件](https://spring.io/projects/spring-boot)
-- [Spring MVC 參考指南](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
-- [Jakarta Validation 規範](https://beanvalidation.org/)
-- [Joda Money 文件](https://www.joda.org/joda-money/)
-- [Spring Boot Auto Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration)
+### CoffeeController
+
+```java
+@Controller
+@RequestMapping("/coffee")
+@Slf4j
+public class CoffeeController {
+    
+    @Autowired
+    private CoffeeService coffeeService;
+
+    /**
+     * Method 2: Automatic validation (In Use) ✅
+     * Spring MVC auto-handles validation errors
+     * Returns 400 Bad Request on validation failure
+     */
+    @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Coffee addCoffeeWithoutBindingResult(@Valid NewCoffeeRequest newCoffee) {
+        return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
+    }
+
+    /**
+     * Multipart file upload
+     * Batch create coffees from uploaded file
+     */
+    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Coffee> batchAddCoffee(@RequestParam("file") MultipartFile file) {
+        List<Coffee> coffees = new ArrayList<>();
+        if (!file.isEmpty()) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(file.getInputStream()))) {
+                String str;
+                while ((str = reader.readLine()) != null) {
+                    String[] arr = StringUtils.split(str, " ");
+                    if (arr != null && arr.length == 2) {
+                        coffees.add(coffeeService.saveCoffee(arr[0],
+                                Money.of(CurrencyUnit.of("TWD"),
+                                        NumberUtils.createBigDecimal(arr[1]))));
+                    }
+                }
+            } catch (IOException e) {
+                log.error("File processing error", e);
+            }
+        }
+        return coffees;
+    }
+}
+```
+
+### NewCoffeeRequest
+
+```java
+@Getter
+@Setter
+@ToString
+public class NewCoffeeRequest {
+    @NotEmpty
+    private String name;
+    
+    @NotNull
+    private Money price;
+}
+```
+
+**Validation:**
+- `@NotEmpty`: Name cannot be null or empty
+- `@NotNull`: Price cannot be null
+
+## Validation Strategy Comparison
+
+### Method 1 vs Method 2
+
+| Aspect | Method 1 (Manual) | Method 2 (Automatic) ✅ |
+|--------|-------------------|------------------------|
+| **BindingResult** | ✅ Used | ❌ Not used |
+| **Validation Check** | Manual `if (result.hasErrors())` | Spring MVC auto-handles |
+| **Success Response** | HTTP 201, Coffee object | HTTP 201, Coffee object |
+| **Failure Response** | HTTP 201, `null` | HTTP 400, detailed error JSON |
+| **Error Information** | None (only logged) | Full JSON with field, code, message |
+| **Code Simplicity** | More code | Less code |
+| **RESTful Compliance** | ❌ No (wrong status code) | ✅ Yes |
+| **Frontend Handling** | Check if response is `null` | Check HTTP status code |
+| **This Project** | ⚠️ Commented out | ✅ In use |
+
+### Why Method 2?
+
+**Advantages:**
+- ✅ Simpler code, no manual validation check
+- ✅ Automatic 400 Bad Request on validation failure
+- ✅ RESTful API compliant
+- ✅ Detailed JSON error response with field, code, message
+- ✅ Standard Spring MVC error format
+- ✅ Frontend can directly use HTTP status code
+
+**Method 1 Use Cases:**
+- Need custom error response format
+- Need complex error handling logic
+- Need to continue processing even with validation errors
+- See Lecture 49 (exception-demo) for advanced custom exception handling
+
+## Testing
+
+### MoneyFormatter Tests
+
+**1. Pure Number Format:**
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=Americano&price=125.00"
+
+# MoneyFormatter: "125.00" → Money.of(TWD, 125.00)
+# Response: 201 CREATED
+```
+
+**2. With Currency Code:**
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=latte&price=TWD 150.00"
+
+# MoneyFormatter: "TWD 150.00" → Money.of(TWD, 150.00)
+# Response: 201 CREATED
+```
+
+### Validation Error Tests
+
+**3. Empty Name (Validation Error):**
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=&price=125.00"
+
+# Spring MVC: Detects @NotEmpty violation
+# Response: 400 BAD REQUEST with detailed error
+```
+
+**4. Invalid Price (Type Conversion Error):**
+
+```bash
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=Americano&price=XXX"
+
+# MoneyFormatter: Cannot parse "XXX"
+# Response: 400 BAD REQUEST (typeMismatch)
+```
+
+### File Upload Test
+
+**5. Batch Upload:**
+
+```bash
+# Create coffee.txt
+echo "Americano 125.0" > coffee.txt
+echo "Italian 150.0" >> coffee.txt
+
+# Upload
+curl -v -X POST http://localhost:8080/coffee/ \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@coffee.txt"
+
+# Response: 201 CREATED (list of coffees)
+```
+
+## Spring Boot Auto Configuration
+
+### WebMVC Auto Configuration
+
+**How Formatter is Auto-Registered:**
+
+```
+1. @Component on MoneyFormatter
+   ↓
+2. Spring component scan detects it
+   ↓
+3. Spring Boot WebMvcAutoConfiguration
+   ↓
+4. WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter
+   ↓
+5. Calls addFormatters(FormatterRegistry)
+   ↓
+6. Auto-discovers Formatter<T> beans
+   ↓
+7. Registers MoneyFormatter to FormatterRegistry
+   ↓
+8. Available for form data binding
+```
+
+**Key Classes:**
+- `org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration`
+- `org.springframework.format.support.FormattingConversionService`
+- `org.springframework.format.FormatterRegistry`
+
+**Auto-Discovered Types:**
+- `Converter<S, T>` - Simple type converter
+- `GenericConverter` - Generic type converter
+- `Formatter<T>` - Formatter with Locale support (our case)
+
+## Formatter vs Converter
+
+### Comparison
+
+| Feature | Formatter | Converter |
+|---------|-----------|-----------|
+| **Interface** | `Formatter<T>` | `Converter<S, T>` |
+| **Methods** | `parse()`, `print()` | `convert()` |
+| **Locale Support** | ✅ Yes | ❌ No |
+| **Bidirectional** | ✅ Yes (parse + print) | ❌ No (only one direction) |
+| **Use Case** | User input/output | Internal conversions |
+| **This Project** | ✅ MoneyFormatter | - |
+
+### When to Use Each
+
+**Use Formatter when:**
+- Need to parse user input (e.g., form data)
+- Need to format output for display
+- Need locale support for internationalization
+- Need bidirectional conversion (string ↔ object)
+
+**Use Converter when:**
+- Simple type conversion (e.g., String → Integer)
+- Internal data transformation
+- One-way conversion only
+- No locale consideration needed
+
+## Best Practices
+
+### 1. Formatter Implementation
+
+```java
+// ✅ Recommended: Implement Formatter with @Component
+@Component
+public class MoneyFormatter implements Formatter<Money> {
+    @Override
+    public Money parse(String text, Locale locale) throws ParseException {
+        // Parse logic
+    }
+    
+    @Override
+    public String print(Money money, Locale locale) {
+        // Format logic
+    }
+}
+
+// ❌ Not recommended: Manual registration
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new MoneyFormatter());  // Manual registration
+    }
+}
+```
+
+### 2. Validation Strategy
+
+```java
+// ✅ Recommended: Let Spring MVC auto-handle (Method 2)
+@PostMapping("/")
+public Coffee add(@Valid NewCoffeeRequest request) {
+    return service.save(request);
+}
+
+// ⚠️ Use when needed: Manual handling (Method 1)
+@PostMapping("/")
+public Coffee add(@Valid NewCoffeeRequest request, BindingResult result) {
+    if (result.hasErrors()) {
+        // Custom error handling
+    }
+    return service.save(request);
+}
+```
+
+### 3. Error Messages
+
+```java
+// ✅ Recommended: Provide custom messages
+public class NewCoffeeRequest {
+    @NotEmpty(message = "咖啡名稱不能為空")
+    private String name;
+    
+    @NotNull(message = "價格不能為空")
+    private Money price;
+}
+
+// ⚠️ Acceptable: Use default messages
+public class NewCoffeeRequest {
+    @NotEmpty  // Default: "不得是空的"
+    private String name;
+}
+```
+
+### 4. File Upload
+
+```java
+// ✅ Recommended: try-with-resources
+public List<Coffee> batchAdd(@RequestParam("file") MultipartFile file) {
+    try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(file.getInputStream()))) {
+        // Process file
+    } catch (IOException e) {
+        log.error("Error", e);
+        throw new RuntimeException("File processing failed", e);
+    }
+}
+
+// ❌ Not recommended: Manual close
+public List<Coffee> batchAdd(@RequestParam("file") MultipartFile file) {
+    BufferedReader reader = null;
+    try {
+        reader = new BufferedReader(...);
+        // Process file
+    } finally {
+        IOUtils.closeQuietly(reader);  // Manual close
+    }
+}
+```
+
+### 5. Production Configuration
+
+```properties
+# ✅ Production: Hide sensitive information
+server.error.include-message=never
+server.error.include-binding-errors=never
+server.error.include-stacktrace=never
+
+# ❌ Development only: Show detailed errors
+server.error.include-message=always
+server.error.include-binding-errors=always
+```
+
+## Common Issues
+
+### Issue 1: Formatter Not Working
+
+**Problem:** MoneyFormatter not applied
+
+**Cause:** Missing `@Component` annotation
+
+**Solution:**
+
+```java
+@Component  // Required!
+public class MoneyFormatter implements Formatter<Money> {
+    // ...
+}
+```
+
+### Issue 2: Validation Not Triggered
+
+**Problem:** Validation errors not caught
+
+**Cause:** Missing `@Valid` annotation
+
+**Solution:**
+
+```java
+// ❌ Wrong: No @Valid
+@PostMapping("/")
+public Coffee add(NewCoffeeRequest request) { }
+
+// ✅ Correct: With @Valid
+@PostMapping("/")
+public Coffee add(@Valid NewCoffeeRequest request) { }
+```
+
+### Issue 3: ParseException on Empty String
+
+**Problem:** MoneyFormatter throws ParseException for empty string
+
+**Cause:** `price` field is empty or invalid
+
+**Expected Behavior:**
+- Empty string → Spring MVC returns 400 (type conversion error)
+- Invalid format → MoneyFormatter throws ParseException → 400
+
+**No action needed:** This is correct behavior
+
+### Issue 4: File Upload 413 Error
+
+**Problem:** File too large
+
+**Cause:** Exceeds `max-file-size` limit
+
+**Solution:**
+
+```properties
+# Increase file size limit
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+```
+
+## Formatter Interface
+
+### Interface Hierarchy
+
+```java
+// Formatter extends Parser and Printer
+public interface Formatter<T> extends Printer<T>, Parser<T> {
+    // No additional methods
+}
+
+// Parser provides parse method
+@FunctionalInterface
+public interface Parser<T> {
+    T parse(String text, Locale locale) throws ParseException;
+}
+
+// Printer provides print method
+@FunctionalInterface
+public interface Printer<T> {
+    String print(T object, Locale locale);
+}
+```
+
+**Why this design?**
+- **Single Responsibility**: Parser for parsing, Printer for formatting
+- **Flexibility**: Can implement only Parser or Printer if needed
+- **Functional**: Both are `@FunctionalInterface`, can use lambda
+
+## Database Schema
+
+**schema.sql:**
+
+```sql
+drop table t_coffee if exists;
+drop table t_order if exists;
+drop table t_order_coffee if exists;
+
+create table t_coffee (
+    id bigint auto_increment,
+    create_time timestamp,
+    update_time timestamp,
+    name varchar(255),
+    price bigint,
+    primary key (id)
+);
+
+create table t_order (
+    id bigint auto_increment,
+    create_time timestamp,
+    update_time timestamp,
+    customer varchar(255),
+    state integer not null,
+    primary key (id)
+);
+
+create table t_order_coffee (
+    coffee_order_id bigint not null,
+    items_id bigint not null
+);
+```
+
+**data.sql:**
+
+```sql
+insert into t_coffee (name, price, create_time, update_time) 
+    values ('espresso', 10000, now(), now());
+insert into t_coffee (name, price, create_time, update_time) 
+    values ('latte', 12500, now(), now());
+insert into t_coffee (name, price, create_time, update_time) 
+    values ('capuccino', 12500, now(), now());
+insert into t_coffee (name, price, create_time, update_time) 
+    values ('mocha', 15000, now(), now());
+insert into t_coffee (name, price, create_time, update_time) 
+    values ('macchiato', 15000, now(), now());
+```
+
+## Best Practices Demonstrated
+
+1. **Custom Formatter**: `MoneyFormatter` with `@Component` auto-registration
+2. **Spring Boot Auto Configuration**: Leverage WebMVC Auto Configuration
+3. **Automatic Validation**: Use `@Valid` without `BindingResult` for simpler code
+4. **Multiple Format Support**: Handle both "125.00" and "TWD 125.00"
+5. **RESTful Error Responses**: Standard 400 Bad Request with detailed errors
+6. **Bean Validation Annotations**: `@NotEmpty`, `@NotNull` on request objects
+7. **Multipart File Upload**: Batch processing from uploaded files
+8. **Resource Management**: try-with-resources for auto-closing streams
+9. **Locale Support**: Formatter supports internationalization
+10. **Type Safety**: Strong typing with Money instead of BigDecimal
+
+## References
+
+- [Spring Boot WebMVC Auto Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web.servlet.spring-mvc.auto-configuration)
 - [Spring Framework Formatter](https://docs.spring.io/spring-framework/reference/core/validation/format.html)
+- [Jakarta Bean Validation](https://jakarta.ee/specifications/bean-validation/3.0/)
 - [Multipart File Upload](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/multipart.html)
+- [Joda Money Documentation](https://www.joda.org/joda-money/)
 
-## 注意事項與最佳實踐
+## License
 
-### ⚠️ 重要提醒
+MIT License - see [LICENSE](LICENSE) file for details.
 
-| 項目 | 說明 | 建議做法 |
-|------|------|----------|
-| 資料驗證 | 請求參數驗證 | 使用 @Valid 和 BindingResult |
-| 異常處理 | 統一錯誤回應 | 實作 @ControllerAdvice |
-| 貨幣處理 | 避免浮點數精度問題 | 使用 Joda Money |
-| 快取機制 | 提升查詢效能 | 使用 @Cacheable 註解 |
-| 類型轉換 | 自定義格式化器 | 實作 Formatter 介面 |
-| 檔案上傳 | Multipart 處理 | 設定檔案大小限制 |
-| 自動配置 | Spring Boot 機制 | 善用 @Component 註解 |
+## About Us
 
-### 🔒 最佳實踐指南
+我們主要專注在敏捷專案管理、物聯網（IoT）應用開發和領域驅動設計（DDD）。喜歡把先進技術和實務經驗結合，打造好用又靈活的軟體解決方案。近來也積極結合 AI 技術，推動自動化工作流，讓開發與運維更有效率、更智慧。持續學習與分享，希望能一起推動軟體開發的創新和進步。
 
-- **控制器設計**: 保持控制器簡潔，業務邏輯放在 Service 層
-- **資料驗證**: 在請求物件上使用驗證註解，並處理驗證錯誤
-- **異常處理**: 實作全域異常處理器，提供統一的錯誤回應格式
-- **貨幣處理**: 使用專業的貨幣函式庫，避免浮點數精度問題
-- **程式碼註解**: 在重要的程式碼區塊添加清楚註解，方便團隊成員理解與維護
-- **自定義類型轉換**: 實作 Formatter 或 Converter 處理複雜類型轉換
-- **檔案上傳**: 使用 MultipartResolver 處理檔案上傳，注意資源釋放
-- **Spring Boot 自動配置**: 善用自動配置機制，減少手動配置
+## Contact
 
-### 🚀 效能優化建議
+**風清雲談** - 專注於敏捷專案管理、物聯網（IoT）應用開發和領域驅動設計（DDD）。
 
-1. **快取策略**: 對頻繁查詢的資料使用快取
-2. **資料庫優化**: 適當的索引和查詢優化
-3. **非同步處理**: 對於耗時操作考慮使用非同步處理
-4. **連線池設定**: 適當的資料庫連線池配置
-5. **檔案上傳優化**: 設定適當的檔案大小限制和緩衝區
-6. **類型轉換優化**: 避免重複的類型轉換，使用快取機制
-
-## 授權說明
-
-本專案採用 MIT 授權條款，詳見 LICENSE 檔案。
-
-## 關於我們
-
-我們主要專注在敏捷專案管理、物聯網（IoT）應用開發和領域驅動設計（DDD）。喜歡把先進技術和實務經驗結合，打造好用又靈活的軟體解決方案。
-
-## 聯繫我們
-
-- **FB 粉絲頁**：[風清雲談 | Facebook](https://www.facebook.com/profile.php?id=61576838896062)
-- **LinkedIn**：[linkedin.com/in/chu-kuo-lung](https://www.linkedin.com/in/chu-kuo-lung)
-- **YouTube 頻道**：[雲談風清 - YouTube](https://www.youtube.com/channel/UCXDqLTdCMiCJ1j8xGRfwEig)
-- **風清雲談 部落格**：[風清雲談](https://blog.fengqing.tw/)
-- **電子郵件**：[fengqing.tw@gmail.com](mailto:fengqing.tw@gmail.com)
+- 🌐 官方網站：[風清雲談部落格](https://blog.fengqing.tw/)
+- 📘 Facebook：[風清雲談粉絲頁](https://www.facebook.com/profile.php?id=61576838896062)
+- 💼 LinkedIn：[Chu Kuo-Lung](https://www.linkedin.com/in/chu-kuo-lung)
+- 📺 YouTube：[雲談風清頻道](https://www.youtube.com/channel/UCXDqLTdCMiCJ1j8xGRfwEig)
+- 📧 Email：[fengqing.tw@gmail.com](mailto:fengqing.tw@gmail.com)
 
 ---
 
-**📅 最後更新：2025-07-10**  
-**👨‍💻 維護者：風清雲談團隊** 
+**⭐ 如果這個專案對您有幫助，歡迎給個 Star！**
