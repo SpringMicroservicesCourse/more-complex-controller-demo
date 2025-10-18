@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -41,25 +38,27 @@ public class CoffeeController {
     @Autowired
     private CoffeeService coffeeService;
 
-    @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    public Coffee addCoffee(@Valid NewCoffeeRequest newCoffee,
-                            BindingResult result) {
-        if (result.hasErrors()) {
-            // 這裡先簡單處理一下，後續講到異常處理時會改
-            log.warn("Binding Errors: {}", result);
-            return null;
-        }
-        return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
-    }
+    // 方法1: @Valid註解驗證成功時的處理
+    // @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    // @ResponseBody
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public Coffee addCoffee(@Valid NewCoffeeRequest newCoffee,
+    //                         BindingResult result) {
+    //     if (result.hasErrors()) {
+    //         // 這裡先簡單處理一下，後續講到異常處理時會改
+    //         log.warn("Binding Errors: {}", result);
+    //         return null;
+    //     }
+    //     return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
+    // }
 
-//    @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Coffee addCoffeeWithoutBindingResult(@Valid NewCoffeeRequest newCoffee) {
-//        return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
-//    }
+    // 方法2: Spring MVC 自動處理驗證錯誤
+   @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+   @ResponseBody
+   @ResponseStatus(HttpStatus.CREATED)
+   public Coffee addCoffeeWithoutBindingResult(@Valid NewCoffeeRequest newCoffee) {
+       return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
+   }
 
     @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
