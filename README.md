@@ -456,35 +456,35 @@ public class CoffeeController {
      * Spring MVC auto-handles validation errors
      * Returns 400 Bad Request on validation failure
      */
-    @PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+@PostMapping(path = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+@ResponseBody
+@ResponseStatus(HttpStatus.CREATED)
     public Coffee addCoffeeWithoutBindingResult(@Valid NewCoffeeRequest newCoffee) {
-        return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
-    }
+    return coffeeService.saveCoffee(newCoffee.getName(), newCoffee.getPrice());
+}
 
     /**
      * Multipart file upload
      * Batch create coffees from uploaded file
      */
-    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Coffee> batchAddCoffee(@RequestParam("file") MultipartFile file) {
-        List<Coffee> coffees = new ArrayList<>();
-        if (!file.isEmpty()) {
+@PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+@ResponseBody
+@ResponseStatus(HttpStatus.CREATED)
+public List<Coffee> batchAddCoffee(@RequestParam("file") MultipartFile file) {
+    List<Coffee> coffees = new ArrayList<>();
+    if (!file.isEmpty()) {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(file.getInputStream()))) {
-                String str;
-                while ((str = reader.readLine()) != null) {
-                    String[] arr = StringUtils.split(str, " ");
-                    if (arr != null && arr.length == 2) {
-                        coffees.add(coffeeService.saveCoffee(arr[0],
-                                Money.of(CurrencyUnit.of("TWD"),
-                                        NumberUtils.createBigDecimal(arr[1]))));
-                    }
+            String str;
+            while ((str = reader.readLine()) != null) {
+                String[] arr = StringUtils.split(str, " ");
+                if (arr != null && arr.length == 2) {
+                    coffees.add(coffeeService.saveCoffee(arr[0],
+                            Money.of(CurrencyUnit.of("TWD"),
+                                    NumberUtils.createBigDecimal(arr[1]))));
                 }
-            } catch (IOException e) {
+            }
+        } catch (IOException e) {
                 log.error("File processing error", e);
             }
         }
